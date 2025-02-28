@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orders Summary</title>
+  <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'delivery/img/mm_delivery.ico' %}"
+    />
+  <link rel="stylesheet" href="{% static 'delivery/css/home-style.css' %}" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* General styles */
+    body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        color: #333;
+        height: 100vh;
+      }
+
+      /* Navbar styles */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fdfdfd;
+        padding: 10px 20px;
+        color: rgb(0, 0, 0);
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo {
+        height: 50px;
+        width: auto;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 15px;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-links li {
+        display: inline;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: rgb(0, 0, 0);
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: #6e6b6b;
+        text-decoration: underline;
+      }
+
+      .logout-btn {
+        background-color: rgb(255, 255, 255);
+        color: #ff6b6b;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+    .orders-summary {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    /* Order Stats Section */
+    .order-stats {
+      display: flex;
+      justify-content: space-around;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      width: 30%;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+    }
+
+    .stat:hover {
+      transform: scale(1.05);
+    }
+
+    .stat h3 {
+      margin: 0;
+      font-size: 16px;
+      color: #555;
+    }
+
+    .stat p {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 5px;
+      color: #222;
+    }
+
+    /* Active Users Section */
+    .active-users {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .active-users h3 {
+      margin-bottom: 10px;
+      color: #1976d2;
+    }
+
+    /* Most Ordered Item Section */
+    .most-ordered-item {
+      background: #ffebcc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .most-ordered-item h3 {
+      margin-bottom: 10px;
+      color: #ff9800;
+    }
+
+    /* Graph Container */
+    .order-graph {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    /* Time Filter Buttons */
+    .time-filters {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .time-filters button {
+      padding: 8px 15px;
+      border: none;
+      background: #1976d2;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .time-filters button:hover {
+      background: #125a9e;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="logo-container">
+      <img
+        src="{% static 'delivery/img/mealMate.png' %}"
+        alt="Meal Mate"
+        class="logo"
+      />
+    </div>
+    <ul class="nav-links">
+      <li><a href="{% url 'admin_home' %}">Home</a></li>
+      <li><a href="{% url 'orders_summary' %}">Orders</a></li>
+      <li><a href="{% url 'add-restaurant-menu' %}">Manage Business</a></li>
+      <li><a href="#profile">Profile</a></li>
+      <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="orders-summary">
+    <h1>Orders Summary</h1>
+
+    <!-- Stats Section -->
+    <div class="order-stats">
+      <div class="stat">
+        <h3>Orders Today</h3>
+        <p>{{ orders_today }}</p>
+      </div>
+      <div class="stat">
+        <h3>Orders This Week</h3>
+        <p>{{ orders_this_week }}</p>
+      </div>
+      <div class="stat">
+        <h3>Orders This Month</h3>
+        <p>{{ orders_this_month }}</p>
+      </div>
+    </div>
+
+    <!-- Active Users -->
+    <div class="active-users">
+      <h3>Active Users</h3>
+      <p><strong>{{ active_users }}</strong> currently online</p>
+    </div>
+
+    <!-- Most Ordered Item Section -->
+    <div class="most-ordered-item">
+      <h3>Most Ordered Item</h3>
+      <p>Item: <strong>{{ most_ordered_item_name }}</strong></p>
+      <p>Restaurant: <strong>{{ most_ordered_item_restaurant }}</strong></p>
+    </div>
+
+    <!-- Order Count Trends (Line Chart) -->
+    <div class="order-graph">
+      <h3>Order Count Trends</h3>
+      <canvas id="orderTrendsChart"></canvas>
+    </div>
+
+    <!-- Food Category Popularity (Pie Chart) -->
+    <div class="order-graph">
+      <h3>Popular Food Categories</h3><canvas id="foodCategoryChart"></canvas>
+    </div>
+
+    <!-- Top Restaurants by Orders (Bar Chart) -->
+    <div class="order-graph">
+      <h3>Top 5 Restaurants by Orders</h3><canvas id="topRestaurantsChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Chart.js for Graph -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // 📈 Order Count Trends (Line Chart)
+    var orderTrendsCtx = document.getElementById('orderTrendsChart').getContext('2d');
+    var orderTrendsChart = new Chart(orderTrendsCtx, {
+      type: 'line',
+      data: {
+        labels: ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly'],
+        datasets: [{
+          label: 'Total Orders',
+          data: [{{ monthly_orders }}, {{ quarterly_orders }}, {{ half_yearly_orders }}, {{ yearly_orders }}],
+          borderColor: '#1976D2',
+          backgroundColor: 'rgba(25, 118, 210, 0.2)',
+          borderWidth: 2,
+          fill: true
+        }]
+      }
+    });
+
+    // 🥧 Food Category Popularity (Pie Chart)
+    var foodCategoryCtx = document.getElementById('foodCategoryChart').getContext('2d');
+    var foodCategoryChart = new Chart(foodCategoryCtx, {
+      type: 'pie',
+      data: {
+        labels: {{ cuisine_names|safe }},
+        datasets: [{
+          data: {{ cuisine_orders|safe }},
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50', '#9C27B0']
+        }]
+      }
+    });
+
+    // 🍽️ Top Restaurants by Orders (Bar Chart)
+    var topRestaurantsCtx = document.getElementById('topRestaurantsChart').getContext('2d');
+    var topRestaurantsChart = new Chart(topRestaurantsCtx, {
+      type: 'bar',
+      data: {
+        labels: {{ restaurant_names|safe }},
+        datasets: [{
+          label: 'Total Orders',
+          data: {{ restaurant_orders|safe }},
+          backgroundColor: ['#F44336', '#FFC107', '#4CAF50', '#2196F3', '#9C27B0']
+        }]
+      }
+    });
+  </script>
+</body>
+
+
+</html>

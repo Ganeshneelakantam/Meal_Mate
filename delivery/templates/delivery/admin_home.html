@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'delivery/img/mm_delivery.ico' %}"
+    />
+    <link rel="stylesheet" href="{% static 'delivery/css/home-style.css' %}" />
+    <!-- <link rel="stylesheet" href="{% static 'delivery/css/output.css' %}"> -->
+    <title>Meal-Mate-Admin</title>
+    <style>
+      /* General styles */
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        color: #333;
+        height: 100vh;
+      }
+
+      /* Navbar styles */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fdfdfd;
+        padding: 10px 20px;
+        color: rgb(0, 0, 0);
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo {
+        height: 50px;
+        width: auto;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 15px;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-links li {
+        display: inline;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: rgb(0, 0, 0);
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: #6e6b6b;
+        text-decoration: underline;
+      }
+
+      .logout-btn {
+        background-color: rgb(255, 255, 255);
+        color: #ff6b6b;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+      .dashboard-head {
+        background-color: rgb(31, 30, 30);
+        color: whitesmoke;
+        padding: 1px;
+      }
+
+      .dashboard-head h1 {
+        padding-left: 50px;
+      }
+
+      /* Heading and form styles */
+      h2 {
+        text-align: center;
+        color: #ff6b6b;
+      }
+
+      .form-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        margin: 20px;
+      }
+
+      form {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 20px auto;
+        /* max-width: 600px; */
+        width: 35%;
+      }
+
+      form label {
+        display: block;
+        margin: 10px 0 5px;
+        font-weight: bold;
+      }
+
+      form input,
+      form textarea,
+      form select,
+      form button {
+        /* width: calc(100% - 20px); */
+        width: 95%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      form textarea {
+        resize: vertical;
+      }
+
+      form button {
+        background-color: #000000;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        text-transform: uppercase;
+        transition: background-color 0.3s ease;
+      }
+
+      form button:hover {
+        background-color: #515151;
+      }
+
+      /* Table styles */
+      table {
+        width: 95%;
+        border-collapse: collapse;
+        margin: 15px auto;
+      }
+
+      #restaurant-table {
+        width: 90% !important;
+      }
+
+      table th,
+      table td {
+        /* border: 1px solid #ddd; */
+        padding: 20px;
+        text-align: left;
+      }
+
+      table th {
+        font-weight: bold;
+        background-color: black;
+        color: white;
+      }
+
+      table td {
+        border-bottom: 1px solid black;
+      }
+
+      .action-btn {
+        padding: 5px 10px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        text-transform: uppercase;
+      }
+
+      /* Add this to your existing stylesheet or inside a <style> tag in the HTML */
+      .center-dropdown-container {
+        display: flex;
+        justify-content: center;
+        /* Horizontally centers the content */
+        align-items: center;
+        /* Full viewport height to center vertically */
+        flex-direction: column;
+        /* Stack elements vertically */
+      }
+
+      #restaurant-dropdown {
+        width: 250px;
+        /* Set width of dropdown to make it more aesthetically pleasing */
+        padding: 10px;
+        font-size: 16px;
+      }
+
+      #edit-link,
+      #delete-link {
+        padding: 10px 20px;
+        background-color: black;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        color: white;
+      }
+
+      #edit-link:hover,
+      #delete-link:hover {
+        background-color: #ffffff;
+        /* border: 0.5px solid black; */
+      }
+
+      #edit-link:hover,
+      #delete-link:hover {
+        color: black;
+      }
+
+      .footer {
+        background-color: #ff5722;
+        color: white;
+        text-align: center;
+        padding: 2px 0;
+        width: 100%;
+        bottom: 0;
+        margin-top: 30px;
+      }
+
+      /* Floating message styles */
+      .floating-message {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #d4edda;
+        /* Green background for success */
+        color: #155724;
+        /* Dark green text */
+        padding: 10px 15px;
+        border: 1px solid #c3e6cb;
+        border-radius: 4px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        font-size: 14px;
+        z-index: 1000;
+        display: none;
+        /* Hidden by default */
+      }
+
+      /* General container styling */
+      .admin-dashboard-stats {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 20px;
+        background-color: #f9f9f9;
+      }
+
+      /* Each stat box */
+      .stat {
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 250px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .stat:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Heading styling */
+      .stat h3 {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      /* Count styling */
+      .stat p {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 15px;
+      }
+
+      /* Link styling */
+      .stat a#view_detail {
+        font-size: 1rem;
+        text-decoration: none;
+        color: #007bff;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+
+      .stat a#view_detail span {
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+      }
+
+      .stat a#view_detail:hover {
+        color: #0056b3;
+      }
+
+      .stat a#view_detail:hover span {
+        transform: translateX(5px);
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <div class="logo-container">
+        <img
+          src="{% static 'delivery/img/mealMate.png' %}"
+          alt="Meal Mate"
+          class="logo"
+        />
+      </div>
+      <ul class="nav-links">
+        <li><a href="{% url 'admin_home' %}">Home</a></li>
+        <li><a href="{% url 'orders_summary' %}">Orders</a></li>
+        <li><a href="{% url 'add-restaurant-menu' %}">Manage Business</a></li>
+        <li><a href="#profile">Profile</a></li>
+        <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+      </ul>
+    </nav>
+
+    <div class="dashboard-head">
+      <h1>Welcome, {{ username }}!</h1>
+    </div>
+    <!-- <p>This is the admin dashboard.</p> -->
+
+    <div class="admin-dashboard-stats">
+      <div class="stat">
+        <h3>Customer Count</h3>
+        <p>{{ customer_count }}</p>
+        <a href="{% url 'admin_details' 'customer' %}" id="view_detail"
+          >view details <span>&rarr;</span></a
+        >
+      </div>
+      <div class="stat">
+        <h3>Admin Count</h3>
+        <p>{{ admin_count }}</p>
+        <a href="{% url 'admin_details' 'admin' %}" id="view_detail"
+          >view details <span>&rarr;</span></a
+        >
+      </div>
+      <div class="stat">
+        <h3>Restaurant's Count</h3>
+        <p>{{ restaurant_count }}</p>
+        <a href="{% url 'admin_details' 'restaurant' %}" id="view_detail"
+          >view details <span>&rarr;</span></a
+        >
+      </div>
+      <div class="stat">
+        <h3>Orders's Count</h3>
+        <p>{{ orders_count }}</p>
+        <a href="{% url 'orders_summary'  %}" id="view_detail"
+          >view details <span>&rarr;</span></a
+        >
+      </div>
+    </div>
+
+    <h2>Restaurant Rankings (by Orders)</h2>
+    <table id="restaurant-ranking-table">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Restaurant Name</th>
+          <th>Orders Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for restaurant in restaurant_rankings %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ restaurant.menu_item__restaurant__name }}</td>
+          <td>{{ restaurant.order_count }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>
+        © 2025 Meal Mate. All Rights Reserved. | Designed for deliciousness!
+      </p>
+    </footer>
+
+    <script>
+      // Show the floating message and make it disappear after 5 seconds
+      document.addEventListener("DOMContentLoaded", function () {
+        const messageBox = document.getElementById("floating-message");
+        if (messageBox) {
+          messageBox.style.display = "block"; // Show the message
+          setTimeout(() => {
+            messageBox.style.display = "none"; // Hide after 5 seconds
+          }, 10000);
+        }
+      });
+    </script>
+  </body>
+</html>

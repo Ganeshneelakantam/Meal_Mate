@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{% static 'delivery/img/mm_delivery.ico' %}">
+    <title>Edit Restaurant</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            height: 100vh;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fdfdfd;
+            padding: 10px 20px;
+            color: rgb(0, 0, 0);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            display: inline;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: rgb(0, 0, 0);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #6e6b6b;
+            text-decoration: underline;
+        }
+
+        .logout-btn {
+            background-color: rgb(255, 255, 255);
+            color: #ff6b6b;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            /* max-width: 600px; */
+            width: 35%;
+        }
+
+        form label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        form input,
+        form textarea,
+        form select,
+        form button {
+            /* width: calc(100% - 20px); */
+            width: 95%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        form button {
+            background-color: #000000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+            margin: 0 auto;
+        }
+
+        form button:hover {
+            background-color: #515151;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="{% static 'delivery/img/mealMate.png' %}" alt="Meal Mate" class="logo">
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'admin_home' %}">Home</a></li>
+            <li><a href="#orders">Orders</a></li>
+            <li><a href="{% url 'add-restaurant-menu' %}">Add Restaurant & Menu</a></li>
+            <li><a href="#profile">Profile</a></li>
+            <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+        </ul>
+    </nav>
+
+    {% block content %}
+    <form method="POST" enctype="multipart/form-data">
+        <h2>Update Restaurant: {{ restaurant.name }}</h2>
+
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update Restaurant</button>
+    </form>
+
+    <!-- <a href="{% url 'admin_home' %}">Back to Admin Home</a> -->
+    {% endblock %}
+
+</body>
+
+</html>

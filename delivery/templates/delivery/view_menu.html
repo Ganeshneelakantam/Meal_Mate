@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'delivery/img/mm_delivery.ico' %}"
+    />
+    <link rel="stylesheet" href="{% static 'delivery/css/home-style.css' %}" />
+    <title>{{ restaurant.name }} - Menu</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #ffffff;
+      }
+
+      .menu-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #e8e8e8;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .menu-header {
+        text-align: center;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+      }
+
+      .menu-header-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .menu-header-img img {
+        height: 160px;
+        width: auto;
+        border-radius: 8px;
+      }
+
+      .menu-header h1 {
+        font-size: 28px;
+        margin-bottom: 5px;
+      }
+
+      .menu-header p {
+        color: #555;
+      }
+
+      .menu-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .menu-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #f9f9f9;
+      }
+
+      .menu-item img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .menu-item-info {
+        flex: 1;
+        margin-left: 15px;
+      }
+
+      .menu-item-info h4 {
+        font-size: 18px;
+        margin: 0;
+      }
+
+      .menu-item-info p {
+        font-size: 14px;
+        color: #555;
+      }
+
+      .add-to-cart-btn {
+        background-color: #ff5a5f;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .add-to-cart-btn:hover {
+        background-color: #e04b4f;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+        animation: modalSlideIn 0.3s ease-out;
+        position: relative;
+      }
+
+      @keyframes modalSlideIn {
+        from {
+          transform: translateY(-100px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        color: #333;
+      }
+
+      .close-modal {
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+      }
+
+      .close-modal:hover {
+        color: #333;
+      }
+
+      .modal-body {
+        text-align: center;
+      }
+
+      .modal-body p {
+        margin-bottom: 20px;
+        font-size: 16px;
+        color: #555;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .modal-buttons button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+      }
+
+      #clearCartBtn {
+        background-color: #ff5a5f;
+        color: white;
+      }
+
+      #clearCartBtn:hover {
+        background-color: #e04b4f;
+      }
+
+      #keepCartBtn {
+        background-color: #4CAF50;
+        color: white;
+      }
+
+      #keepCartBtn:hover {
+        background-color: #45a049;
+      }
+    </style>
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+  </head>
+
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="logo-container">
+        <img
+          src="{% static 'delivery/img/mealMate.png' %}"
+          alt="Meal Mate"
+          class="logo"
+        />
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'view_cart' %}">Cart</a></li>
+        <li><a href="{% url 'order_history' %}">Re-Order</a></li>
+
+        <!-- Profile Dropdown -->
+        <li class="profile-dropdown">
+          <ul class="dropdown-menu" id="profileDropdown">
+            <li><a href="{% url 'user_profile' %}">Profile</a></li>
+            <li><a href="#">Favorites</a></li>
+            <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <div class="menu-container">
+      <div class="menu-header">
+        <div class="menu-header-img">
+          <img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }}" />
+        </div>
+        <div class="menu-header-info">
+          <h1>{{ restaurant.name }}'s Menu</h1>
+          <p>{{ restaurant.description }}</p>
+          <p><strong>Location:</strong> {{ restaurant.location }}</p>
+        </div>
+      </div>
+
+      <ul class="menu-list">
+        {% for menu in menus %}
+        <li class="menu-item" data-menu-id="{{ menu.id }}">
+          <img src="{{ menu.image_url }}" alt="{{ menu.name }}" />
+          <div class="menu-item-info">
+            <h4>{{ menu.name }}</h4>
+            <p>{{ menu.description }}</p>
+            <p><strong>Price:</strong> ₹{{ menu.price }}</p>
+          </div>
+          <div class="cart-controls">
+            <!-- Quantity Controls -->
+            {% comment %}
+            <button
+              class="decrease-btn"
+              onclick="updateQuantity('{{ menu.id }}', -1)"
+            >
+              -
+            </button>
+            <span id="quantity-{{ menu.id }}">1</span>
+            <button
+              class="increase-btn"
+              onclick="updateQuantity('{{ menu.id }}', 1)"
+            >
+              +
+            </button>
+            {% endcomment %}
+            <!-- Replace the existing cart-controls div with this -->
+            <div class="cart-controls" data-menu-id="{{ menu.id }}">
+              {% if menu.cart_quantity > 0 %}
+              <button
+                class="decrease-btn"
+                onclick="updateQuantity('{{ menu.id }}', -1)"
+              >
+                -
+              </button>
+              <span id="quantity-{{ menu.id }}">{{ menu.cart_quantity }}</span>
+              <button
+                class="increase-btn"
+                onclick="updateQuantity('{{ menu.id }}', 1)"
+              >
+                +
+              </button>
+              {% else %}
+              <button
+                class="add-to-cart-btn"
+                onclick="addToCart('{{ menu.id }}')"
+              >
+                Add to Cart
+              </button>
+              {% endif %}
+            </div>
+          </div>
+        </li>
+        {% empty %}
+        <p>No menu items available for this restaurant.</p>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Add this modal HTML just before closing body tag -->
+    <div id="alertModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Notice</h2>
+          <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <p id="modalMessage"></p>
+          <div class="modal-buttons">
+            <button id="clearCartBtn">Clear Cart & Add Item</button>
+            <button id="keepCartBtn">Keep Current Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.querySelectorAll(".add-to-cart-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+          let menuId = this.getAttribute("data-menu-id");
+
+          fetch("/add_to_cart/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: JSON.stringify({ menu_id: menuId }),
+          })
+            .then((response) => response.json())
+            .catch((error) => console.error("Error:", error));
+        });
+      });
+
+      // ✅ Function to get CSRF token
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          let cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.startsWith(name + "=")) {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      function addToCart(menuId) {
+        console.log("Adding menu item with ID:", menuId);
+        fetch("/add_to_cart/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify({ menu_id: menuId }),
+        })
+        .then((response) => {
+          console.log("Raw response:", response); // Debug log
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Parsed data:", data); // Debug log
+          
+          if (data.error === "different_restaurant") {  // Check for error type
+            showModal(
+              "You already have items from a different restaurant in your cart. Would you like to clear your current cart and add this item?",
+              menuId
+            );
+          } else if (data.status === "success") {
+            const cartControls = document.querySelector(`.cart-controls[data-menu-id="${menuId}"]`);
+            cartControls.innerHTML = `
+              <button class="decrease-btn" onclick="updateQuantity('${menuId}', -1)">-</button>
+              <span id="quantity-${menuId}">${data.quantity}</span>
+              <button class="increase-btn" onclick="updateQuantity('${menuId}', 1)">+</button>
+            `;
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+      }
+
+      function updateQuantity(menuId, delta) {
+        fetch("/update_cart/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify({ menu_item_id: menuId, quantity_change: delta }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            const quantityElement = document.getElementById(`quantity-${menuId}`);
+            quantityElement.textContent = data.quantity;
+            if (data.quantity <= 0) {
+              const cartControls = document.querySelector(`.cart-controls[data-menu-id="${menuId}"]`);
+              cartControls.innerHTML = `<button class="add-to-cart-btn" onclick="addToCart('${menuId}')">Add to Cart</button>`;
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+      }
+
+      // Add these new functions for modal handling
+      function showModal(message, menuId) {
+        console.log("Showing modal with message:", message); // Debug log
+        
+        const modal = document.getElementById('alertModal');
+        const modalMessage = document.getElementById('modalMessage');
+        
+        if (!modal || !modalMessage) {
+          console.error("Modal elements not found!"); // Debug log
+          return;
+        }
+        
+        modalMessage.textContent = message;
+        modal.style.display = "block";
+        
+        const closeBtn = document.querySelector('.close-modal');
+        const clearCartBtn = document.getElementById('clearCartBtn');
+        const keepCartBtn = document.getElementById('keepCartBtn');
+        
+        const closeModal = () => {
+          modal.style.display = "none";
+        };
+        
+        closeBtn.onclick = closeModal;
+        
+        window.onclick = function(event) {
+          if (event.target === modal) {
+            closeModal();
+          }
+        };
+        
+        clearCartBtn.onclick = function() {
+          clearCartAndAddItem(menuId);
+          closeModal();
+        };
+        
+        keepCartBtn.onclick = closeModal;
+      }
+
+      function clearCartAndAddItem(menuId) {
+        fetch("/clear_cart/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Clear cart response:", data); // Debug log
+          if (data.status === "success") {
+            setTimeout(() => addToCart(menuId), 100);
+          }
+        })
+        .catch(error => console.error("Error:", error));
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,393 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+body {
+    font-family: roboto;
+    margin: 0;
+    padding: 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 50px;
+    margin-left: 30px;
+}
+
+nav {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between logo and links */
+    align-items: center; /* Center vertically */
+    overflow: hidden;
+    padding: 10px;
+    padding-bottom: 75px;
+    background-image: url('/static/delivery/img/fruits.png');
+    background-repeat: no-repeat;
+    background-position-x: center;
+  }
+  
+  .logo-container {
+    margin-left: 20px; /* Add some margin for spacing */
+  }
+  
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav li {
+    float: left;
+  }
+  
+  nav a {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #6e6b6b;
+}
+
+.logout-btn {
+    background-color: rgb(255, 255, 255);
+    color: #ff6b6b;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.logout-btn:hover {
+    background-color: #000000;
+    color: #ff6b6b;
+}
+
+  .service-text p {
+    font-weight: 600;
+  }
+
+  span {
+    background-color: black;
+    color: white;
+    border-top-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding: 8px;
+    font-weight: bold;
+  }
+
+/* Container setup */
+.user-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0 0 0 150px;
+    font-family: Arial, sans-serif;
+    height: 92vh; /* Full viewport height */
+    /* border: 3px solid red; */
+    background-image: url('/static/delivery/img/user-background.png');
+    background-repeat: no-repeat;
+}
+
+/* Welcome section */
+.welcome-section {
+    width: 40%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    /* border: 3px solid red; */
+}
+
+.welcome-section h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.welcome-section p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Form section */
+.form-section {
+    width: 40%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    /* border: 3px solid red; */
+}
+
+.toggle-buttons {
+    display: flex;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    overflow: hidden;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.toggle-buttons button {
+    flex: 1;
+    padding: 7px 24px;
+    font-size: 12px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+.toggle-buttons button.active {
+    background-color: #000000;
+    color: white;
+}
+
+.toggle-buttons button.inactive {
+    background-color: white;
+    color: black;
+    border: none;
+}
+
+.form {
+    width: 100%;
+}
+
+.form h2 {
+    margin-bottom: 20px;
+}
+
+.form input{
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+select{
+    width: 85%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #666;
+}
+
+.form button {
+    padding: 10px 25px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form button:hover {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    border: 1px solid black;
+}
+
+.form p {
+    margin-top: 10px;
+}
+
+.form p a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.form p a:hover {
+    text-decoration: underline;
+}
+
+.services {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 70px;
+}
+
+.food-delivery {
+    background-color: whitesmoke;
+    border-radius: 12px;
+    margin: 12px;
+    padding-bottom: 40px;
+}
+
+.food-delivery img {
+    width: 100%;
+    height: 60%;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.service-text {
+    padding: 12px;
+}
+
+.service-title {
+    font-family: "Anton", serif;
+    font-weight: 500;
+    font-style: normal;
+    letter-spacing: 1.5px;
+    font-size: 25px;
+    margin: 0px;
+    color: rgb(158, 157, 157);
+}
+
+footer {
+    background-color: #f4f4f4;
+    padding: 40px 20px;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+.footer-col {
+    flex: 1;
+    margin: 20px;
+}
+
+.footer-col h2, .footer-col h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.footer-col p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.footer-col a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.footer-col a:hover {
+    text-decoration: underline;
+}
+
+.footer-col ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.footer-col ul li {
+    margin: 10px 0;
+}
+
+.social-media-icons a {
+    margin: 0 10px;
+}
+
+#icon {
+    width: 30px;
+    height: 30px;
+    transition: all 0.3s ease;
+}
+
+#icon:hover {
+    transform: scale(1.1);
+}
+
+.footer-bottom {
+    margin-top: 30px;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.app-stores {
+    display: flex;
+    flex-direction: row;
+}
+
+.app-stores a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    margin: 10px;
+}
+
+.app-store-badge,
+.google-play-badge {
+    width: 30px;
+    margin-right: 10px;
+}
+
+.app-stores p {
+    font-size: 14px;
+    color: #333;
+    margin: 0;
+}
+
+footer p {
+    font-size: 14px;
+    color: #333;
+    margin-top: 20px;
+}
+
+footer .footer-col.about-us {
+    flex-basis: 40%;
+}
+
+footer .footer-col {
+    flex-basis: 20%;
+}
+
+footer .footer-bottom {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-col {
+        flex-basis: 100%;
+        text-align: center;
+    }
+
+    .social-media-icons {
+        margin-top: 15px;
+    }
+
+    .app-stores {
+        justify-content: center;
+    }
+
+    .app-stores a {
+        margin: 10px;
+    }
+}

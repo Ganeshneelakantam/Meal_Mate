@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .profile-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-container h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #343a40;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 95%;
+            padding: 12px;
+            font-size: 14px;
+            color: #495057;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #ffffff;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn:focus {
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+
+
+        /* Custom styling for the success message */
+        .alert-success {
+            background-color: #28a745;
+            /* Green background */
+            color: white;
+            /* White text */
+            padding: 15px;
+            /* Padding around text */
+            border-radius: 5px;
+            /* Rounded corners */
+            font-size: 16px;
+            /* Text size */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow */
+            margin-bottom: 20px;
+            /* Space below the message */
+        }
+
+        /* Close button styling */
+        .alert .close {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .alert .close:hover {
+            color: #f1f1f1;
+        }
+
+        /* Animation to fade out the success message after 5 seconds */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
+
+        .alert.fade-out {
+            animation: fadeOut 1s forwards;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <h1>User Profile</h1>
+
+        <!-- Display the success message -->
+        {% if messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {% for message in messages %}
+            <strong>Success!</strong> {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form action="{% url 'update_profile' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" name="username" value="{{ user.username }}" required>
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" name="email" value="{{ user.email }}" required>
+            </div>
+            <div class="form-group">
+                <label>Phone Number:</label>
+                <input type="number" name="mobile" value="{{ user.mobile }}">
+            </div>
+            <div class="form-group">
+                <label>Address:</label>
+                <textarea name="address">{{ user.address }}</textarea>
+            </div>
+            <button type="submit" class="btn save-btn">Save Changes</button>
+        </form>
+    </div>
+
+    <!-- Add some JavaScript to remove the success message after 5 seconds -->
+    <script>
+        setTimeout(function () {
+            const successMessage = document.querySelector('.alert');
+            if (successMessage) {
+                successMessage.style.display = 'none';
+            }
+        }, 5000);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="{% static 'delivery/img/mm_delivery.ico' %}" />
+    <link rel="stylesheet" href="{% static 'delivery/css/home-style.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <title>Meal Mate - Dashboard</title>
+
+    <style>
+        /* home-style.css */
+        .category-section {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .category-section h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        .category-list {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .category-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+
+        .category-card:hover {
+            transform: scale(1.05);
+        }
+
+        .category-card img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-card span {
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* Search Container and Suggestions */
+        .search-container {
+            position: relative;
+            width: 60%;
+            margin-left: 6%;
+        }
+
+        #search-bar {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 22px;
+        }
+
+        #suggestions-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .suggestion-item img {
+            width: 60px;
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .suggestion-item h4 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .suggestion-item p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Profile Icon Styling */
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #f5f5f5;
+            /* Light gray for a modern look */
+            color: #333;
+            /* Dark gray text for contrast */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            /* Adjusted font size for better proportions */
+            font-weight: 600;
+            /* Slightly bold for clarity */
+            border-radius: 50%;
+            /* Circular profile icon */
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow */
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Hover effect on profile icon */
+        .profile-icon:hover {
+            background-color: #e0e0e0;
+            /* Slightly darker on hover */
+            transform: scale(1.05);
+            /* Subtle scaling effect */
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            display: none;
+            /* Initially hidden */
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: #ffffff;
+            /* White background for contrast */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            /* Deep shadow for depth */
+            list-style: none;
+            padding: 0;
+            border-radius: 8px;
+            /* Rounded corners */
+            z-index: 101;
+            /* Ensure visibility over other elements */
+            min-width: 200px;
+            /* Consistent size for readability */
+            overflow: hidden;
+            /* Remove overflow issues */
+        }
+
+        /* Dropdown Menu Items */
+        .dropdown-menu li {
+            padding: 0;
+            border-bottom: 1px solid #f0f0f0;
+            /* Separator between items */
+        }
+
+        .dropdown-menu li:last-child {
+            border-bottom: none;
+            /* Remove border for last item */
+        }
+
+        .dropdown-menu li a {
+            text-decoration: none;
+            color: #333;
+            /* Dark gray for text */
+            font-size: 14px;
+            /* Standard size for consistency */
+            font-weight: 500;
+            /* Medium weight for readability */
+            padding: 12px 16px;
+            /* Spacious padding for better clickability */
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover effect on menu items */
+        .dropdown-menu li a:hover {
+            background-color: #f7f7f7;
+            /* Slight gray for hover effect */
+        }
+
+        /* Active Dropdown State */
+        .profile-dropdown.active .dropdown-menu {
+            display: block !important;
+        }
+
+        /* Logout Button Styling */
+        .dropdown-menu li a.logout-btn {
+            color: #d9534f;
+            /* Highlight logout in red */
+            font-weight: 600;
+        }
+
+        .dropdown-menu li a.logout-btn:hover {
+            background-color: #fbe3e3;
+            /* Light red hover */
+        }
+
+        /* Navbar Overflow Fix */
+        .navbar {
+            overflow: visible;
+            /* Prevent dropdown clipping */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+        }
+
+        /* Welcome Section Fix */
+        .welcome-section {
+            position: relative;
+            z-index: 1;
+            /* Dropdown appears above this */
+        }
+
+        /* Recent Orders Section */
+        .recent-orders-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            /* 4 items per row */
+            gap: 20px;
+            /* Space between items */
+            padding: 20px;
+        }
+
+        .recent-order-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+            text-decoration: none;
+        }
+
+        .recent-order-card:hover {
+            transform: scale(1.05);
+            /* Slight zoom effect on hover */
+        }
+
+        .recent-order-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .recent-order-info h3 {
+            margin: 10px 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .recent-order-info p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .recent-order-info .price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff5a5f;
+            /* Highlight price in red */
+        }
+
+        .add-to-cart-btn {
+            background-color: #ff5a5f;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #e04b4f;
+            /* Darker red on hover */
+        }
+
+        .text-center {
+            text-align: center;
+            text-transform: uppercase;
+            color: #d9534f;
+        }
+
+        .favorite-icon {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: gray;
+        }
+
+        .favorite-icon.active {
+            color: gold;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="{% static 'delivery/img/mealMate.png' %}" alt="Meal Mate" class="logo" />
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="search-bar" placeholder="Search by cuisine, item, or restaurant..."
+                autocomplete="off" />
+            <!-- Updated Search Suggestions Template -->
+            <div id="suggestions-container">
+                <!-- Suggestions will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'view_cart' %}">Cart</a></li>
+            <li><a href="{% url 'order_history' %}">Re-Order</a></li>
+
+            <!-- Profile Dropdown -->
+            <li class="profile-dropdown">
+                <div class="profile-icon" onclick="toggleDropdown()">
+                    <div class="user-initial">{{ user.username.0|upper }}</div>
+                    <!-- First Letter of Username -->
+                </div>
+                <ul class="dropdown-menu" id="profileDropdown">
+                    <li><a href="{% url 'user_profile' %}">Profile</a></li>
+                    <li><a href="{% url 'favorite_list' %}">Favorites</a></li>
+                    <li><a href="{% url 'order_history' %}">Order History</a></li>
+                    <li><a href="#">Manage Addresses</a></li>
+                    <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+        <div class="welcome-content">
+            <h1 class="greet-msg">Welcome, {{ username }}!</h1>
+            <p>
+                Your one-stop solution for delicious meals and hassle-free delivery.
+            </p>
+            <a href="#orders" class="btn primary-btn">View Orders</a>
+            <a href="#restaurant" class="btn secondary-btn">Explore Restaurants</a>
+        </div>
+        <div class="welcome-image">
+            <div class="slideshow" id="slideshow">
+                <img src="https://img.freepik.com/premium-photo/food-with-delivery-set-dishes-diet-top-view-free-space-your-text-black-background_187166-31861.jpg"
+                    alt="Food Image 3" />
+            </div>
+        </div>
+    </section>
+
+    <!-- Add this section under the welcome section -->
+    <section class="category-section">
+        <h2>What's on your mind?</h2>
+        <div class="category-list">
+            <a href="{% url 'restaurants_by_cuisine' 'Burger' %}" class="category-card">
+                <img src="https://img.pikbest.com/png-images/20241017/veggie-burger-image-isolated-on-transparent-background-for-versatile-use_10969816.png!bw700"
+                    alt="Burger" />
+                <span>Burger</span>
+            </a>
+            <a href="{% url 'restaurants_by_cuisine' 'Pizza' %}" class="category-card">
+                <img src="https://img.freepik.com/premium-vector/vector-slice-pizza-with-cheese-delicious-italian-pizza-with-tomatoes-olives-mozzarella-basil_651519-26.jpg"
+                    alt="Pizza" />
+                <span>Pizza</span>
+            </a>
+            <a href="{% url 'restaurants_by_cuisine' 'Biryani' %}" class="category-card">
+                <img src="https://www.shutterstock.com/image-vector/chicken-biryani-pot-vector-illustration-260nw-1169135497.jpg"
+                    alt="Biryani" />
+                <span>Biryani</span>
+            </a>
+            <!-- Add more categories as needed -->
+            <a href="{% url 'restaurants_by_cuisine' 'Mutton' %}" class="category-card">
+                <img src="https://img.freepik.com/premium-vector/vector-illustration-mutton-curry-lamb-currygarnished-with-curry-leaves_527904-1480.jpg?semt=ais_hybrid"
+                    alt="mutton" />
+                <span>Mutton</span>
+            </a>
+
+            <a href="{% url 'restaurants_by_cuisine' 'Meal' %}" class="category-card">
+                <img src="https://i.pinimg.com/736x/14/be/0f/14be0f09dab2687583e101192c4855aa.jpg" alt="Biryani" />
+                <span>Meal</span>
+            </a>
+
+            <a href="{% url 'restaurants_by_cuisine' 'fries, paneer, lasagna' %}" class="category-card">
+                <img src="https://static.vecteezy.com/system/resources/previews/000/964/198/non_2x/fast-food-meal-set-vector.jpg"
+                    alt="fast food" />
+                <span>Fast food</span>
+            </a>
+
+            <a href="{% url 'restaurants_by_cuisine' 'Ice cream' %}" class="category-card">
+                <img src="https://www.shutterstock.com/image-photo/two-scoops-chocolate-ice-cream-600nw-2485263183.jpg"
+                    alt="Ice Cream" />
+                <span>Ice Cream</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Restaurants and Menus Section -->
+    <section id="restaurant" class="restaurants-section">
+        <h2>Featured Restaurants</h2>
+        <div class="restaurant-list">
+            {% for restaurant in restaurants %}
+            <div class="restaurant-card">
+                <!-- <i class="far fa-star favorite-icon"></i> Favorite Icon -->
+                <!-- Favorite Icon (Filled if already favorited) -->
+                {% comment %} {% if restaurant in user.favorites.all %}
+                <i class="fas fa-star favorite-icon active" data-restaurant-id="{{ restaurant.id }}"></i>
+                {% else %}
+                <i class="far fa-star favorite-icon" data-restaurant-id="{{ restaurant.id }}"></i>
+                {% endif %} {% endcomment %}
+
+                <img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }}" class="restaurant-image" />
+                <div class="restaurant-info">
+                    <h3>{{ restaurant.name }}</h3>
+                    <!-- Rating Display with Star Icon -->
+                    <span class="rating">
+                        <i class="fas fa-star"></i> {{ restaurant.rating }}
+                    </span>
+                </div>
+                <!-- Cuisine Type Display -->
+                <p class="cuisine">
+                    <strong>Cuisine:</strong> {{ restaurant.cuisine_type }}
+                </p>
+                <a href="{% url 'view_menu' restaurant.id %}" class="btn view-btn">View Menu</a>
+            </div>
+            {% empty %}
+            <p>No restaurants available.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Recent Orders Section -->
+    <section id="recent-orders" class="restaurants-section">
+        <h2 class="text-center">Recent Orders</h2>
+        <div class="recent-orders-grid">
+            {% for order in order_history %} {% for item in order.items %}
+            <a href="{% url 'view_menu' item.menu_item.restaurant.id %}" class="recent-order-card">
+                <img src="{{ item.menu_item.image_url }}" alt="{{ item.menu_item.name }}" class="recent-order-image" />
+                <div class="recent-order-info">
+                    <h3>{{ item.menu_item.name }}</h3>
+                    <p>{{ item.menu_item.description }}</p>
+                    <p class="price">₹{{ item.menu_item.price }}</p>
+                </div>
+            </a>
+            {% endfor %} {% empty %}
+            <p class="text-center">No recent orders found.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            © 2025 Meal Mate. All Rights Reserved. | Designed for deliciousness!
+        </p>
+    </footer>
+
+    <script>
+        async function fetchNewRestaurants() {
+            const response = await fetch("/get_restaurants/");
+            const data = await response.json();
+            const restaurantList = document.querySelector(".restaurant-list");
+
+            data.restaurants.forEach((restaurant) => {
+                // Create new restaurant card dynamically
+                const card = document.createElement("div");
+                card.classList.add("restaurant-card");
+
+                card.innerHTML = `
+              <img src="${restaurant.image}" alt="${restaurant.name}" class="restaurant-image" />
+              <h3>${restaurant.name}</h3>
+              <p>${restaurant.description}</p>
+              <p><strong>Location:</strong> ${restaurant.location}</p>
+              <a href="/view_menu/${restaurant.id}" class="btn view-btn">View Menu</a>
+            `;
+                restaurantList.appendChild(card);
+            });
+        }
+
+        // Fetch restaurants every 10 seconds (example)
+        setInterval(fetchNewRestaurants, 5000);
+
+        document
+            .getElementById("search-bar")
+            .addEventListener("input", function () {
+                const query = this.value.trim();
+                if (query.length > 2) {
+                    fetch(`/search_restaurants/?query=${query}`)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            const suggestionsContainer = document.getElementById(
+                                "suggestions-container"
+                            );
+                            suggestionsContainer.innerHTML = "";
+
+                            data.forEach((item) => {
+                                const suggestionItem = document.createElement("div");
+                                suggestionItem.className = "suggestion-item";
+                                suggestionItem.dataset.restaurantId = item.id; // Store restaurant ID
+                                suggestionItem.dataset.type = item.type; // Store type (Restaurant/Menu Item)
+
+                                suggestionItem.innerHTML = `
+                        <img src="${item.image_url}" alt="${item.name}" />
+                        <div>
+                            <h4>${item.name}</h4>
+                            <p>${item.description}</p>
+                        </div>
+                    `;
+
+                                suggestionItem.addEventListener("click", function () {
+                                    if (
+                                        item.type === "Restaurant" ||
+                                        item.type === "Menu Item"
+                                    ) {
+                                        window.location.href = `/view_menu/${item.id}/`; // Redirect to menu page
+                                    }
+                                });
+
+                                suggestionsContainer.appendChild(suggestionItem);
+                            });
+
+                            suggestionsContainer.style.display = "block";
+                        });
+                } else {
+                    document.getElementById("suggestions-container").style.display =
+                        "none";
+                }
+            });
+
+        
+
+        // Hide suggestions when clicking outside the search bar
+        document.addEventListener("click", (e) => {
+            const searchBar = document.getElementById("search-bar");
+            const suggestionsContainer = document.getElementById(
+                "suggestions-container"
+            );
+            if (
+                !searchBar.contains(e.target) &&
+                !suggestionsContainer.contains(e.target)
+            ) {
+                suggestionsContainer.style.display = "none";
+            }
+        });
+
+        // Hide suggestions when clicking outside the search bar or suggestions container
+        document.addEventListener("click", (e) => {
+            const isClickInsideSearch =
+                searchBar.contains(e.target) ||
+                suggestionsContainer.contains(e.target);
+
+            if (!isClickInsideSearch) {
+                suggestionsContainer.style.display = "none";
+            }
+        });
+
+        // Show suggestions again if the user clicks back in the search bar
+        searchBar.addEventListener("focus", () => {
+            if (searchBar.value.trim().length > 0) {
+                suggestionsContainer.style.display = "block";
+            }
+        });
+
+        function toggleDropdown() {
+            var dropdown = document.getElementById("profileDropdown");
+
+            if (
+                dropdown.style.display === "none" ||
+                dropdown.style.display === ""
+            ) {
+                dropdown.style.display = "block"; // Show dropdown
+            } else {
+                dropdown.style.display = "none"; // Hide dropdown
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function (event) {
+            var dropdown = document.getElementById("profileDropdown");
+            var profileIcon = document.querySelector(".profile-icon");
+
+            if (
+                !profileIcon.contains(event.target) &&
+                !dropdown.contains(event.target)
+            ) {
+                dropdown.style.display = "none";
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const favorites = JSON.parse(localStorage.getItem("favorites")) || {};
+
+            document.querySelectorAll(".favorite-icon").forEach((icon) => {
+                const restaurantId = icon.getAttribute("data-restaurant-id");
+
+                // Check localStorage and update icon state
+                if (favorites[restaurantId]) {
+                    icon.classList.add("fas", "text-warning");
+                    icon.classList.remove("far");
+                } else {
+                    icon.classList.add("far");
+                    icon.classList.remove("fas", "text-warning");
+                }
+
+                icon.addEventListener("click", function () {
+                    fetch(`/favorites/toggle/${restaurantId}/`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": getCSRFToken(),
+                        },
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.status === "added") {
+                                this.classList.add("fas", "text-warning");
+                                this.classList.remove("far");
+                                favorites[restaurantId] = true;
+                            } else if (data.status === "removed") {
+                                this.classList.remove("fas", "text-warning");
+                                this.classList.add("far");
+                                delete favorites[restaurantId];
+                            }
+                            localStorage.setItem("favorites", JSON.stringify(favorites));
+                        })
+                        .catch((error) => console.error("Error:", error));
+                });
+            });
+        });
+
+        function getCSRFToken() {
+            return document.cookie
+                .split("; ")
+                .find((row) => row.startsWith("csrftoken"))
+                ?.split("=")[1];
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".favorite-icon").forEach(icon => {
+            icon.addEventListener("click", function () {
+                const restaurantId = this.dataset.restaurantId;
+                const isFavorite = this.classList.contains("fas");
+
+                fetch(`/toggle_favorite/${restaurantId}/`, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken"), // Ensure CSRF token is included
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "same-origin"
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (isFavorite) {
+                            this.classList.remove("fas", "active");
+                            this.classList.add("far");
+                        } else {
+                            this.classList.remove("far");
+                            this.classList.add("fas", "active");
+                        }
+                    } else {
+                        alert("Error: " + data.error);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        });
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            document.cookie.split(";").forEach(cookie => {
+                const trimmed = cookie.trim();
+                if (trimmed.startsWith(name + "=")) {
+                    cookieValue = decodeURIComponent(trimmed.substring(name.length + 1));
+                }
+            });
+        }
+        return cookieValue;
+    }
+
+    </script>
+</body>
+
+</html>

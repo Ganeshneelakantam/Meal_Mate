@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'delivery/img/mm_delivery.ico' %}"
+    />
+    <link rel="stylesheet" href="{% static 'delivery/css/home-style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <title>Favorites</title>
+  </head>
+
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="logo-container">
+        <img
+          src="{% static 'delivery/img/mealMate.png' %}"
+          alt="Meal Mate"
+          class="logo"
+        />
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'view_cart' %}">Cart</a></li>
+        <li><a href="{% url 'order_history' %}">Re-Order</a></li>
+
+        <!-- Profile Dropdown -->
+        <li class="profile-dropdown">
+          <ul class="dropdown-menu" id="profileDropdown">
+            <li><a href="{% url 'user_profile' %}">Profile</a></li>
+            <li><a href="#">Favorites</a></li>
+            <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <h2>Your Favorite Restaurants</h2>
+    <div class="restaurant-list">
+      {% for favorite in favorites %}
+      <div class="restaurant-card">
+        <i
+          class="fas fa-star favorite-icon active"
+          data-restaurant-id="{{ favorite.restaurant.id }}"
+        ></i>
+        <img
+          src="{{ favorite.restaurant.image_url }}"
+          alt="{{ favorite.restaurant.name }}"
+          class="restaurant-image"
+        />
+        <div class="restaurant-info">
+          <h3>{{ favorite.restaurant.name }}</h3>
+          <span class="rating"
+            ><i class="fas fa-star"></i> {{ favorite.restaurant.rating }}</span
+          >
+        </div>
+        <p class="cuisine">
+          <strong>Cuisine:</strong> {{ favorite.restaurant.cuisine_type }}
+        </p>
+        <a
+          href="{% url 'view_menu' favorite.restaurant.id %}"
+          class="btn view-btn"
+          >View Menu</a
+        >
+      </div>
+      {% empty %}
+      <p>No favorite restaurants yet.</p>
+      {% endfor %}
+    </div>
+  </body>
+</html>

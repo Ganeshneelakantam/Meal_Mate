@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'delivery/img/mm_delivery.ico' %}"
+    />
+    <link rel="stylesheet" href="{% static 'delivery/css/home-style.css' %}" />
+    <title>Add Restaurant & Menu</title>
+
+    <style>
+      /* Navbar styles */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fdfdfd;
+        padding: 10px 20px;
+        color: rgb(0, 0, 0);
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo {
+        height: 50px;
+        width: auto;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 15px;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-links li {
+        display: inline;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: rgb(0, 0, 0);
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: #6e6b6b;
+        text-decoration: underline;
+      }
+
+      .logout-btn {
+        background-color: rgb(255, 255, 255);
+        color: #ff6b6b;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+      .form-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        margin: 10px;
+      }
+
+      form {
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 9px rgba(50, 50, 50, 0.94);
+        margin: 20px auto;
+        /* max-width: 600px; */
+        width: 35%;
+      }
+
+      form label {
+        display: block;
+        margin: 10px 0 5px;
+        font-weight: bold;
+      }
+
+      form input,
+      form textarea,
+      form select,
+      form button {
+        /* width: calc(100% - 20px); */
+        width: 95%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      form textarea {
+        resize: vertical;
+      }
+
+      form button {
+        background-color: #000000;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        text-transform: uppercase;
+        transition: background-color 0.3s ease;
+      }
+
+      form button:hover {
+        background-color: #515151;
+      }
+
+      /* Floating message styles */
+      .floating-message {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #d4edda; /* Green background for success */
+        color: #155724; /* Dark green text */
+        padding: 10px 15px;
+        border: 1px solid #c3e6cb;
+        border-radius: 4px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        font-size: 14px;
+        z-index: 1000;
+        display: none; /* Hidden by default */
+      }
+
+      form h2 {
+        color: black !important;
+      }
+
+      /* Heading and form styles */
+      h2 {
+        text-align: center;
+        color: #ff6b6b;
+      }
+
+      /* Table styles */
+      table {
+        width: 95%;
+        border-collapse: collapse;
+        margin: 15px auto;
+      }
+
+      #restaurant-table {
+        width: 90% !important;
+      }
+
+      table th,
+      table td {
+        /* border: 1px solid #ddd; */
+        padding: 20px;
+        text-align: left;
+      }
+
+      table th {
+        font-weight: bold;
+        background-color: black;
+        color: white;
+      }
+
+      table td {
+        border-bottom: 1px solid black;
+        font-size: 14px;
+      }
+
+      .action-btn {
+        padding: 5px 10px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        text-transform: uppercase;
+      }
+
+      /* Add this to your existing stylesheet or inside a <style> tag in the HTML */
+      .center-dropdown-container {
+        display: flex;
+        justify-content: center;
+        /* Horizontally centers the content */
+        align-items: center;
+        /* Full viewport height to center vertically */
+        flex-direction: column;
+        /* Stack elements vertically */
+      }
+
+      #restaurant-dropdown {
+        width: 250px;
+        /* Set width of dropdown to make it more aesthetically pleasing */
+        padding: 10px;
+        font-size: 16px;
+      }
+
+      #edit-link,
+      #delete-link {
+        padding: 5px 10px;
+        background-color: black;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        color: white;
+      }
+
+      #edit-link:hover,
+      #delete-link:hover {
+        background-color: #ffffff;
+        /* border: 0.5px solid black; */
+      }
+
+      #edit-link:hover,
+      #delete-link:hover {
+        color: black;
+      }
+    </style>
+  </head>
+
+  <!-- add_restaurant_menu.html -->
+  <body>
+    <nav class="navbar">
+      <div class="logo-container">
+        <img
+          src="{% static 'delivery/img/mealMate.png' %}"
+          alt="Meal Mate"
+          class="logo"
+        />
+      </div>
+      <ul class="nav-links">
+        <li><a href="{% url 'admin_home' %}">Home</a></li>
+        <li><a href="{% url 'orders_summary' %}">Orders</a></li>
+        <li>
+          <a href="{% url 'add-restaurant-menu' %}">Manage Business</a>
+        </li>
+        <li><a href="#profile">Profile</a></li>
+        <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+      </ul>
+    </nav>
+
+    <div class="form-container">
+      <!-- Add New Restaurant Form -->
+      <form
+        method="POST"
+        action="{% url 'add_restaurant' %}"
+        enctype="multipart/form-data"
+      >
+        <h2>Add New Restaurant</h2>
+
+        {% csrf_token %}
+        <label for="name">Restaurant Name:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <label for="image_url">Image URL:</label>
+        <input type="text" id="image_url" name="image_url" />
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required /><br /><br />
+
+        <label for="cuisine_type">Cuisine Type:</label>
+        <input
+          type="text"
+          id="cuisine_type"
+          name="cuisine_type"
+          value="General"
+        /><br /><br />
+
+        <label for="rating">Rating:</label>
+        <input
+          type="number"
+          id="rating"
+          name="rating"
+          step="0.01"
+          min="0"
+          max="5"
+        /><br /><br />
+
+        <button type="submit">Add Restaurant</button>
+      </form>
+
+      <!-- Add New Menu Item Form -->
+      <form
+        method="POST"
+        action="{% url 'add_menu' %}"
+        enctype="multipart/form-data"
+      >
+        <h2>Add New Menu Item</h2>
+
+        {% csrf_token %}
+        <label for="restaurant">Select Restaurant:</label>
+        <select name="restaurant" id="restaurant">
+          <option value="">Choose a restaurant</option>
+          {% for restaurant in restaurants %}
+          <option value="{{ restaurant.id }}">{{ restaurant.name }}</option>
+          {% empty %}
+          <option>No restaurants available</option>
+          {% endfor %}
+        </select>
+
+        <label for="menu_name">Menu Item Name:</label>
+        <input type="text" id="menu_name" name="name" required />
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <label for="price">Price:</label>
+        <input type="number" step="0.01" id="price" name="price" required />
+
+        <label for="image_url">Image URL:</label>
+        <input type="text" id="image_url" name="image_url" /><br /><br />
+
+        <label for="veg_or_non_veg">Veg/Non-Veg:</label>
+        <select name="veg_or_non_veg" id="veg_or_non_veg" required>
+          <option value="Veg">Vegetarian</option>
+          <option value="Non-Veg">Non-Vegetarian</option></select
+        ><br /><br />
+
+        <label for="rating">Rating:</label>
+        <input
+          type="number"
+          id="rating"
+          name="rating"
+          step="0.01"
+          min="0"
+          max="5"
+        /><br /><br />
+
+        <button type="submit">Add Menu Item</button>
+      </form>
+    </div>
+
+    {% if messages %}
+    <div id="floating-message" class="floating-message">
+      {% for message in messages %} {{ message }} {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- View Restaurants -->
+    <h2>Restaurants</h2>
+    {% if messages %}
+    <div id="floating-message" class="floating-message">
+      {% for message in messages %} {{ message }} {% endfor %}
+    </div>
+    {% endif %}
+    <table>
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Location</th>
+          <th>Cuisine Type</th>
+          <th>Rating</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for restaurant in restaurants %}
+        <tr>
+          <td>
+            <img
+              src="{{ restaurant.image_url }}"
+              alt="{{ restaurant.name }}"
+              width="50"
+            />
+          </td>
+          <td>{{ restaurant.name }}</td>
+          <td>{{ restaurant.description }}</td>
+          <td>{{ restaurant.location }}</td>
+          <td>{{ restaurant.cuisine_type }}</td>
+          <td>{{ restaurant.rating }}</td>
+          <td>
+            <a href="{% url 'update_restaurant' restaurant.id %}" id="edit-link"
+              >Edit</a
+            >
+            <a
+              href="{% url 'delete_restaurant' restaurant.id %}"
+              id="delete-link"
+              >Delete</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Dropdown to filter menu items based on selected restaurant -->
+    <div class="center-dropdown-container">
+      <h2>Select a Restaurant to View Menu Items</h2>
+      <select id="restaurant-dropdown">
+        <option value="">Choose a restaurant</option>
+        {% for restaurant in restaurants %}
+        <option value="{{ restaurant.id }}">{{ restaurant.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- View Menu Items -->
+    <h2>Menu Items</h2>
+    <table id="menu-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Restaurant</th>
+          <th>Veg/Non-Veg</th>
+          <th>Rating</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Menu items will be dynamically inserted here -->
+        <tr>
+          <td colspan="7" style="text-align: center">
+            Please select a restaurant to view menu items.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <script>
+      document
+        .getElementById("restaurant-dropdown")
+        .addEventListener("change", function () {
+          let selectedRestaurantId = this.value;
+          let menuTableBody = document
+            .getElementById("menu-table")
+            .getElementsByTagName("tbody")[0];
+
+          // Clear current menu items in the table
+          menuTableBody.innerHTML = "";
+
+          if (selectedRestaurantId) {
+            // Fetch menu items based on the selected restaurant
+            fetch(`/get_menu_items/${selectedRestaurantId}/`)
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.menu_items && data.menu_items.length > 0) {
+                  data.menu_items.forEach((item) => {
+                    let row = menuTableBody.insertRow();
+                    row.innerHTML = `
+                                    <td>${item.name}</td>
+                                    <td>${item.description}</td>
+                                    <td>${item.price}</td>
+                                    <td>${item.restaurant}</td>
+                                    <td>${item.veg_or_non_veg}</td>
+                                    <td>${item.rating}</td>
+                                    <td>
+                                        <a href="/update_menu/${item.id}" id="edit-link">Edit</a> 
+                                        <a href="/delete_menu/${item.id}" id="delete-link">Delete</a>
+                                    </td>
+                                `;
+                  });
+                } else {
+                  // If no menu items are found for the selected restaurant
+                  menuTableBody.innerHTML =
+                    '<tr><td colspan="7">No menu items available for this restaurant.</td></tr>';
+                }
+              })
+              .catch((error) => {
+                console.error("Error fetching menu items:", error);
+                menuTableBody.innerHTML =
+                  '<tr><td colspan="7">Error fetching menu items.</td></tr>';
+              });
+          } else {
+            // If no restaurant is selected, display message
+            menuTableBody.innerHTML =
+              '<tr><td colspan="7">Please select a restaurant to view menu items.</td></tr>';
+          }
+        });
+
+      // Show the floating message and make it disappear after 5 seconds
+      document.addEventListener("DOMContentLoaded", function () {
+        const messageBox = document.getElementById("floating-message");
+        if (messageBox) {
+          messageBox.style.display = "block";
+          setTimeout(() => {
+            messageBox.style.display = "none";
+          }, 10000);
+        }
+      });
+    </script>
+  </body>
+</html>

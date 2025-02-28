@@ -1,0 +1,372 @@
+{% load cart_extras %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{% static 'delivery/img/mm_delivery.ico' %}" />
+    <title>Cart</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            height: 100vh;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 50px;
+            margin-left: 30px;
+        }
+
+        nav {
+            display: flex;
+            /* Use flexbox for layout */
+            justify-content: space-between;
+            /* Space between logo and links */
+            align-items: center;
+            /* Center vertically */
+            overflow: hidden;
+            padding: 10px;
+            /* background-color: #ffffff; */
+        }
+
+        .logo-container {
+            margin-left: 20px;
+            /* Add some margin for spacing */
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav li {
+            float: left;
+        }
+
+        nav a {
+            display: block;
+            color: black;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: rgb(0, 0, 0);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #6e6b6b;
+            text-decoration: underline;
+        }
+
+        .navbar {
+            padding: 10px 20px;
+            margin-bottom: 20px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .cart-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
+        .cart-table thead th {
+            background-color: #f4f4f4;
+            color: #555;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .cart-table tbody td {
+            text-align: center;
+            padding: 15px;
+            /* border-bottom: 1px solid #eee; */
+        }
+
+        .cart-table tbody tr:hover {
+            background-color: #f8f8f8;
+        }
+
+        .item-image img {
+            max-width: 70px;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: auto;
+            margin: auto;
+        }
+
+        .quantity-controls button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .quantity-controls button:hover {
+            background-color: #0056b3;
+        }
+
+        tfoot td {
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+            color: #333;
+        }
+
+        tfoot #total-amount {
+            color: #d9534f;
+        }
+
+        p {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .menu-item-image {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            /* border-radius: 8px; */
+        }
+    </style>
+
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+</head>
+
+<body>
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="{% static 'delivery/img/mealMate.png' %}" alt="Meal Mate" class="logo" />
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'view_cart' %}">Cart</a></li>
+
+            <!-- Profile Dropdown -->
+            <li class="profile-dropdown">
+                <ul class="dropdown-menu" id="profileDropdown">
+                    <li><a href="{% url 'user_profile' %}">Profile</a></li>
+                    <li><a href="#">Favorites</a></li>
+                    <li><a href="{% url 'order_history' %}">Order History</a></li>
+                    <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="cart-container">
+        <h2>Your Cart</h2>
+
+        {% if cart_items %}
+        <!-- Cart items table -->
+        <table class="cart-table">
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <!-- Image Column -->
+                    <td class="item-image">
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="menu-item-image" />
+                    </td>
+                    <!-- Item Name -->
+                    <td>{{ item.name }}</td>
+                    <!-- Price -->
+                    <td>₹{{ item.price }}</td>
+                    <!-- Quantity Controls -->
+                    <td class="quantity-controls">
+                        <button class="decrease-btn" onclick="updateCartQuantity('{{ item.id }}', -1)">-</button>
+                        <span id="quantity-{{ item.id }}">{{ item.quantity }}</span>
+                        <button class="increase-btn" onclick="updateCartQuantity('{{ item.id }}', 1)">+</button>
+                    </td>
+                    <!-- Subtotal -->
+                    <td id="subtotal-{{ item.id }}">₹{{ item.price|mul:item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4"><strong>Total Amount:</strong></td>
+                    <td id="total-amount"><strong>₹{{ total_amount }}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="payment-section">
+            <h3>Total: ₹{{ total_amount }}</h3>
+            <form action="/process_payment/" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="razorpay_order_id" value="{{ razorpay_order_id }}">
+                <input type="hidden" name="razorpay_key_id" value="{{ razorpay_key_id }}">
+                <input type="hidden" name="total_amount" value="{{ total_amount }}">
+
+                <!-- Razorpay payment button -->
+                <button id="pay-button">Pay Now</button>
+            </form>
+        </div>
+
+        {% else %}
+        <p>Your cart is empty. Go add some delicious items!</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function updateCartQuantity(menuId, delta) {
+            fetch('/update_cart/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken(), // Get CSRF token
+                },
+                body: JSON.stringify({
+                    menu_item_id: menuId,
+                    quantity_change: delta
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.quantity === 0) {
+                            // Reload the page if the quantity becomes zero
+                            window.location.reload();
+                        } else {
+                            // Update quantity and subtotal dynamically
+                            document.querySelector(`#quantity-${menuId}`).textContent = data.quantity;
+                            document.querySelector(`#subtotal-${menuId}`).textContent = `₹${data.subtotal}`;
+
+                            // Update total amount dynamically
+                            document.querySelector('#total-amount').textContent = `₹${data.total}`;
+
+                            // Reload the page whenever the subtotal is updated
+                            window.location.reload();
+                        }
+                    } else {
+                        alert(data.message || 'Failed to update cart.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to update cart.');
+                });
+        }
+
+
+        // Helper function to get CSRF token
+        function getCSRFToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]').value;
+        }
+    </script>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.getElementById('pay-button').onclick = function (e) {
+            e.preventDefault();
+
+            var options = {
+                "key": "{{ razorpay_key_id }}",
+                "amount": "{{ total_amount|mul:100 }}",
+                "currency": "INR",
+                "name": "Food Delivery",
+                "description": "Payment for food items",
+                "order_id": "{{ razorpay_order_id }}",
+                "handler": function (response) {
+                    // Send a request to clear the cart on the server
+                    fetch('/clear_cart/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken(),
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Redirect to the payment success page
+                                window.location.href = "/payment-success/";
+                            } else {
+                                alert('Failed to clear the cart!');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            window.location.href = "/payment-success/";
+                        });
+                },
+                "prefill": {
+                    "name": "{{ request.user.username }}",
+                    "email": "{{ request.user.email }}",
+                },
+                "theme": {
+                    "color": "#F37254"
+                }
+            };
+
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+    </script>
+</body>
+
+
+</html>

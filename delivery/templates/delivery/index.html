@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{% static 'delivery/img/mm_delivery.ico' %}">
+    <link rel="stylesheet" href="{% static 'delivery/css/index-style.css' %}">
+    <title>Meal-Mate</title>
+</head>
+
+<body>
+    <div>
+        <nav>
+            <div class="logo-container">
+                <img src="{% static 'delivery/img/mealMate.png' %}" alt="meal-Mate" class="logo">
+            </div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="{% url 'login' %}">Login</a></li>
+            </ul>
+        </nav>
+
+        <div class="user-container">
+            <div class="welcome-section">
+                <h1>Welcome to Meal-Mate</h1>
+                <p>Your companion for meal planning and healthy eating!</p>
+            </div>
+            <div class="form-section">
+                <!-- Toggle Buttons -->
+                <div class="toggle-buttons">
+                    <button id="signInBtn" class="active" onclick="toggleForm('signIn')">Sign In</button>
+                    <button id="signUpBtn" class="inactive" onclick="toggleForm('signUp')">Sign Up</button>
+                </div>
+                <!-- Sign In Form -->
+                <form id="signInForm" class="form" style="display: block;" method="POST"
+                    action="{% url 'handle_login' %}" autocomplete="off">
+                    {% csrf_token %}
+                    <!-- {{ sign_in_form.as_p }} -->
+                    <h2>Sign In</h2>
+                    {% if error_message %}
+                    <p class="error-message" style="color: red;">{{ error_message }}</p>
+                    {% endif %}
+                    <input type="text" placeholder="Username" name="username" required />
+                    <input type="password" placeholder="Password" name="password" required /><br />
+                    <p style="font-size: 13px; margin-right: 60%;"><a href="{% url 'forgot_password' %}">Forgot Password?</a></p>
+                    <button type="submit">Log In</button>
+                    {% comment %} <form method="get" action="{% url 'socialaccount_login' 'google' %}">
+                        <button type="submit" class="google-login-btn">
+                            <img src="{% static 'delivery/img/google-icon.png' %}" alt="Google Icon" />
+                            Login with Google
+                        </button>
+                    </form> {% endcomment %}
+                    {% comment %} <a href="{% url 'socialaccount_login' 'google' %}" class="google-login-button">
+                        <img src="{% static 'delivery/img/google-logo.png' %}" alt="Google Logo"> Login with Google
+                    </a> {% endcomment %}
+                    
+                    
+                    <p style="font-size: 13px;"><a href="#" onclick="toggleForm('signUp')">New User? Register Now</a></p>
+                </form>
+                <!-- Sign Up Form -->
+                <form id="signUpForm" class="form" style="display: none;" method="POST"
+                    action="{% url 'handle_signup' %}">
+                    {% csrf_token %}
+                    <!-- {{ sign_up_form.as_p }} -->
+                    <h2>Sign Up</h2>
+                    <input type="text" placeholder="Full Name" name="username" required />
+                    <input type="email" placeholder="Email" name="email" required />
+                    <input type="number" placeholder="Phone Number" name="mobile" required />
+                    {% comment %} <select name="role" required>
+                        <option value="">Select Role eg:'Customer' or 'Admin'</option>
+                        <option value="customer">Customer</option>
+                        <option value="admin">Admin</option>
+                    </select> {% endcomment %}
+                    <input type="password" placeholder="Password" name="password" required />
+                    <input type="text" placeholder="Address" name="address" required /> <br>
+                    <button type="submit">Register</button>
+                    <p style="font-size: 13px; "><a href="#" onclick="toggleForm('signIn')">Already have an account? Log In</a></p>
+                </form>
+            </div>
+        </div>
+
+        <div class="services">
+            <div class="food-delivery">
+                <img src="https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?b=1&s=612x612&w=0&k=20&c=Mn_EPBAGwtzh5K6VyfDmd7Q5eJFXSHhGWVr3T4WDQRo="
+                    alt="">
+                <div class="service-text">
+                    <h3 class="service-title">FOOD DELIVERY</h3>
+                    <p>FROM RESTAURANTS</p>
+                    <span>UPTO 60% OFF</span>
+                </div>
+            </div>
+
+            <div class="food-delivery">
+                <img src="https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?b=1&s=612x612&w=0&k=20&c=Mn_EPBAGwtzh5K6VyfDmd7Q5eJFXSHhGWVr3T4WDQRo="
+                    alt="">
+                <div class="service-text">
+                    <h3 class="service-title">FOOD DELIVERY</h3>
+                    <p>FROM RESTAURANTS</p>
+                    <span>UPTO 60% OFF</span>
+                </div>
+            </div>
+
+            <div class="food-delivery">
+                <img src="https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?b=1&s=612x612&w=0&k=20&c=Mn_EPBAGwtzh5K6VyfDmd7Q5eJFXSHhGWVr3T4WDQRo="
+                    alt="">
+                <div class="service-text">
+                    <h3 class="service-title">FOOD DELIVERY</h3>
+                    <p>FROM RESTAURANTS</p>
+                    <span>UPTO 60% OFF</span>
+                </div>
+            </div>
+
+            <div class="food-delivery">
+                <img src="https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?b=1&s=612x612&w=0&k=20&c=Mn_EPBAGwtzh5K6VyfDmd7Q5eJFXSHhGWVr3T4WDQRo="
+                    alt="">
+                <div class="service-text">
+                    <h3 class="service-title">FOOD DELIVERY</h3>
+                    <p>FROM RESTAURANTS</p>
+                    <span>UPTO 60% OFF</span>
+                </div>
+            </div>
+        </div>
+        <footer id="about">
+            <div class="footer-content">
+                <div class="footer-col about-us">
+                    <h2>About Us</h2>
+                    <p>At Meal-Mate, we're more than just a food delivery service; we're your culinary companions. We believe in connecting you with the best local flavors, delivering delicious meals right to your doorstep with unparalleled speed and convenience. Our team of food delivery wizards works tirelessly to curate an exceptional experience, from the moment you browse our diverse menu to the first delightful bite. With Meal-Mate, savor the magic of effortless dining!</p>
+                </div>
+        
+                <div class="footer-col links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#">Menu</a></li>
+                        <li><a href="#">Order Tracking</a></li>
+                    </ul>
+                </div>
+        
+                <div class="footer-col contact" id="contact">
+                    <h3>Contact Us</h3>
+                    <p><strong>Phone:</strong> [Phone Number]</p>
+                    <p><strong>Email:</strong> [Email Address]</p>
+                    <p><strong>Address:</strong> [Your Address]</p>
+                </div>
+        
+                <div class="footer-col social-media">
+                    <h3>Follow Us</h3>
+                    <div class="social-media-icons">
+                        <a href="#"><img id="icon" src="{% static 'delivery/img/facebook-icon.png' %}" alt="Facebook"></a>
+                        <a href="#"><img id="icon" src="{% static 'delivery/img/instagram-icon.png' %}" alt="Instagram"></a>
+                        <a href="#"><img id="icon" src="{% static 'delivery/img/twitter-icon.png' %}" alt="Twitter"></a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="footer-bottom">
+                <div class="app-stores">
+                    <a href="#"><img src="{% static 'delivery/img/app-store-badge.png' %}" alt="Download on App Store" class="app-store-badge">
+                        <p>App Store</p></a>
+                    <a href="#"><img src="{% static 'delivery/img/google-play-badge.png' %}" alt="Get it on Google Play" class="google-play-badge">
+                        <p>Google Play</p></a>
+                </div>        
+            </div>
+            <p>&copy; 2025 Meal-Mate. All Rights Reserved.</p>
+
+        </footer>
+        
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function toggleForm(formType) {
+            // Get buttons and forms
+            const signInBtn = document.getElementById('signInBtn');
+            const signUpBtn = document.getElementById('signUpBtn');
+            const signInForm = document.getElementById('signInForm');
+            const signUpForm = document.getElementById('signUpForm');
+
+            // Toggle forms and button styles
+            if (formType === 'signIn') {
+                signInForm.style.display = 'block';
+                signUpForm.style.display = 'none';
+                signInBtn.classList.add('active');
+                signInBtn.classList.remove('inactive');
+                signUpBtn.classList.add('inactive');
+                signUpBtn.classList.remove('active');
+            } else {
+                signInForm.style.display = 'none';
+                signUpForm.style.display = 'block';
+                signUpBtn.classList.add('active');
+                signUpBtn.classList.remove('inactive');
+                signInBtn.classList.add('inactive');
+                signInBtn.classList.remove('active');
+            }
+        }
+
+        window.onload = function () {
+            const form = document.getElementById('signInForm');
+            if (form) {
+                form.reset();
+            }
+        };
+    </script>
+</body>
+
+</html>
