@@ -152,15 +152,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = '/static/'
-import os
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / "delivery" / "static"]  # Make sure this folder exists
-STATIC_ROOT = BASE_DIR / "staticfiles"  # Where collectstatic will copy files
+
+# Only include STATICFILES_DIRS if you have static files inside your app folders
+STATICFILES_DIRS = [
+    BASE_DIR / "delivery" / "static",  # Ensure this folder exists
+]
+
+# The directory where collectstatic will place static files for deployment
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 
 
