@@ -12,6 +12,267 @@
 
     <style>
         /* home-style.css */
+        body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  height: 100vh;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+  margin-left: 30px;
+}
+
+nav {
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space between logo and links */
+  align-items: center; /* Center vertically */
+  overflow: hidden;
+  padding: 10px;
+}
+
+.logo-container {
+  margin-left: 20px; /* Add some margin for spacing */
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  float: left;
+}
+
+nav a {
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #6e6b6b;
+  text-decoration: underline;
+}
+
+.welcome-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 0 20px;
+  color: white;
+  position: relative; /* Necessary for pseudo-elements to position correctly */
+  background-image: url('https://c8.alamy.com/comp/2C97GGY/pizza-with-ingredients-and-supplies-hand-drawn-background-food-doodles-seamless-pattern-vector-illustration-2C97GGY.jpg');
+  background-size: cover; /* Ensure the background covers the entire section */
+  background-position: center; /* Center the background image */
+}
+
+.welcome-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.759); /* Black with 50% opacity */
+  z-index: 1; /* Place the layer above the background but below the text */
+}
+
+.welcome-section > * {
+  position: relative;
+  z-index: 2; /* Ensure the text stays above the overlay */
+}
+
+
+#orders, #home, #restaurant {
+  padding: 10px 20px;
+}
+
+.primary-btn, .secondary-btn {
+  color: white;
+  padding: 2.5px;
+}
+
+.primary-btn:hover, .secondary-btn:hover {
+  color: rgb(250, 162, 114);
+}
+
+.greet-msg {
+  font-size: 2.5em;
+  color: #fcfcfc;
+}
+
+.welcome-image {
+  position: relative;
+  width: 100%;
+  max-width: 500px; 
+  overflow: hidden;
+  border-top-left-radius: 120px;
+  border-bottom-left-radius: 120px;
+  margin: 0;
+}
+
+.welcome-image img {
+  border-top-left-radius: 120px;
+  border-bottom-left-radius: 120px;
+  border: 3.5px solid rgba(255, 255, 255, 0.708);
+  border-right: none;
+  border-bottom: none;
+  border-top: none;
+}
+
+.orders-section ul {
+  list-style: none;
+  padding: 20px;
+}
+
+.orders-section li {
+  display: flex;
+  justify-content: space-between;
+  background: white;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.footer {
+  background-color: #ff5722;
+  color: white;
+  text-align: center;
+  padding: 2px 0;
+  width: 100%;
+  bottom: 0;
+}
+
+/* Restaurant List and Cards */
+.restaurants-section {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.restaurant-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Adjust gap as needed */
+}
+
+.restaurant-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  width: calc(20% - 12px); /* 5 cards per row with 15px gap */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.restaurant-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+
+.restaurant-info {
+  padding: 15px;
+}
+
+.restaurant-info h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #ffa500;
+  margin: 5px 0;
+}
+
+.rating i {
+  margin-right: 5px;
+}
+
+.cuisine {
+  font-size: 14px;
+  color: #666;
+  margin: 5px 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.view-btn {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  text-align: center;
+  background: #000000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.view-btn:hover {
+  background: #313131;
+}
+
+
+@media (max-width: 1200px) {
+  .restaurant-card {
+      width: calc(25% - 12px); /* 4 cards per row */
+  }
+}
+
+@media (max-width: 992px) {
+  .restaurant-card {
+      width: calc(33.333% - 12px); /* 3 cards per row */
+  }
+}
+
+@media (max-width: 768px) {
+  .restaurant-card {
+      width: calc(50% - 12px); /* 2 cards per row */
+  }
+}
+
+@media (max-width: 576px) {
+  .restaurant-card {
+      width: 100%; /* 1 card per row */
+  }
+}
         .category-section {
             padding: 2rem;
             text-align: center;
